@@ -1,18 +1,26 @@
 from .common import *
+import configparser
+
 
 DEBUG = True
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+config = configparser.ConfigParser()
+config.read(Path('.env'))
+
 
 DATABASES = {
     'default': {
-        'ENGINE': '####',
-        'NAME': '###',
-        'HOST': '######',
-        'USER': '#######',
-        'PASSWORD': '###'
+        'ENGINE': config.get('database', 'DB_ENGINE', fallback='django.db.backends.postgresql'),
+        'NAME': config.get('database', 'DB_NAME'),
+        'USER': config.get('database', 'DB_USER'),
+        'PASSWORD': config.get('database', 'DB_PASSWORD'),
+        'HOST': config.get('database', 'DB_HOST',  
+ fallback='localhost'),
+        'PORT': config.get('database', 'DB_PORT', fallback='5432'),
     }
 }
+
+SECRET_KEY = config.get('general', 'SECRET_KEY')
 
 CELERY_BROKER_URL = 'redis://redis:6379/1'
 
